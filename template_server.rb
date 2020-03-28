@@ -76,7 +76,14 @@ class GHAapp < Sinatra::Application
     def handle_installation_created_event(payload)
       payload['repositories'].each do |repo|
         logger.debug repo
-        logger.debug @installation_client.pull_requests(repo['full_name'], :state => 'opened', :user['login'] => 'dependabot[bot]')
+        opened_dependabot_prs = @installation_client.pull_requests(repo['full_name'], :state => 'opened', :user['login'] => 'dependabot[bot]')
+        merge_prs(opened_dependabot_prs, repo['full_name'])
+      end
+    end
+
+    def merge_prs(prs, repo)
+      prs.each do |pr|
+        @installation_client.merge_pull_request(repo, pr[:number], commit_message='merges dependabot changes')
       end
     end
 
