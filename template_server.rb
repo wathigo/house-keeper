@@ -57,11 +57,12 @@ class GHAapp < Sinatra::Application
 
 
   post '/event_handler' do
-
-    # # # # # # # # # # # #
-    # ADD YOUR CODE HERE  #
-    # # # # # # # # # # # #
-
+    case request.env['HTTP_X_GITHUB_EVENT']
+    when 'installation'
+      if @payload['action'] === 'created'
+        handle_installation_created_event(@payload)
+      end
+    end
     200 # success status
   end
 
@@ -71,6 +72,13 @@ class GHAapp < Sinatra::Application
     # # # # # # # # # # # # # # # # #
     # ADD YOUR HELPER METHODS HERE  #
     # # # # # # # # # # # # # # # # #
+
+    def handle_installation_created_event(payload)
+      payload['repositories'].each do |repo|
+        logger.debug repo
+        logger.debug @installation_client.pull_requests(repo['full_name'], :state => 'opened', :user['login'] => 'dependabot[bot]')
+      end
+    end
 
     # Saves the raw payload and converts the payload to JSON format
     def get_payload_request(request)

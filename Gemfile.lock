@@ -6,15 +6,33 @@ GEM
     dotenv (2.5.0)
     faraday (0.15.3)
       multipart-post (>= 1.2, < 3)
+    ffi (1.12.2)
+    ipaddr (1.2.2)
+    json (2.3.0)
     jwt (2.1.0)
+    listen (3.2.1)
+      rb-fsevent (~> 0.10, >= 0.10.3)
+      rb-inotify (~> 0.9, >= 0.9.10)
+    logger (1.4.2)
     multipart-post (2.0.0)
     mustermann (1.0.3)
     octokit (4.13.0)
       sawyer (~> 0.8.0, >= 0.5.3)
+    openssl (2.1.2)
+      ipaddr
     public_suffix (3.0.3)
     rack (2.0.8)
     rack-protection (2.0.4)
       rack
+    rb-fsevent (0.10.3)
+    rb-inotify (0.10.1)
+      ffi (~> 1.0)
+    rbnacl (7.1.1)
+      ffi
+    rbnacl-libsodium (1.0.16)
+      rbnacl (>= 3.0.1)
+    rerun (0.13.0)
+      listen (~> 3.0)
     sawyer (0.8.1)
       addressable (>= 2.3.5, < 2.6)
       faraday (~> 0.8, < 1.0)
@@ -30,9 +48,14 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv
+  json
   jwt (~> 2.1)
+  logger
   octokit (~> 4.0)
+  openssl
+  rbnacl-libsodium
+  rerun
   sinatra (~> 2.0)
 
 BUNDLED WITH
-   1.17.1
+   1.17.2
