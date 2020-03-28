@@ -9,3 +9,4 @@ gem 'openssl'
 gem 'json'
 gem 'logger'
 gem 'rerun'
+gem "rspec"

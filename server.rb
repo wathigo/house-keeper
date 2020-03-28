@@ -83,8 +83,7 @@ class GHAapp < Sinatra::Application
 
     def merge_prs(prs, repo)
       prs.each do |pr|
-        last_commit = @installation_client.pull_request_commits(repo, pr[:number])[-1]
-        comment = 'Thank you @' + pr[:user]['login'] + ' for the update. Am a bot too :)'
+        comment = 'Thank you @' + pr[:user]['login'] + ' for the update. I am a bot too :)'
         @installation_client.create_pull_request_review(repo, pr[:number], {:event => 'COMMENT', :body => comment})
         @installation_client.merge_pull_request(repo, pr[:number], commit_message='merges dependabot changes')
       end
