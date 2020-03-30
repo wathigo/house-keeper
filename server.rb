@@ -7,7 +7,7 @@ require 'jwt'         # Authenticates a GitHub App
 require 'time'        # Gets ISO 8601 representation of a Time object
 require 'logger'      # Logs debug statements
 
-set :port, 30000
+set :port, 3000
 set :bind, '0.0.0.0'
 
 # This is template code to create a GitHub App server.

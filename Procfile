@@ -1,1 +1,1 @@
-web: bundle exec rackup config.ru -p 30000
+web: bundle exec rackup config.ru -p 3000
