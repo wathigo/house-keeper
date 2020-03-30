@@ -10,10 +10,27 @@ require 'logger'      # Logs debug statements
 set :port, 3000
 set :bind, '0.0.0.0'
 
+
+# This is template code to create a GitHub App server.
+# You can read more about GitHub Apps here: # https://developer.github.com/apps/
+#
+# On its own, this app does absolutely nothing, except that it can be installed.
+# It's up to you to add functionality!
+# You can check out one example in advanced_server.rb.
+#
+# This code is a Sinatra app, for two reasons:
+#   1. Because the app will require a landing page for installation.
+#   2. To easily handle webhook events.
+#
+# Of course, not all apps need to receive and process events!
+# Feel free to rip out the event handling code if you don't need it.
+#
+# Have fun!
+#
+
 class GHAapp < Sinatra::Application
 
-  # Converts the newlines. Expects that the private key has been set as an
-  # environment variable in PEM format.
+  # Expects that the private key in PEM format. Converts the newlines
   PRIVATE_KEY = OpenSSL::PKey::RSA.new(ENV['GITHUB_PRIVATE_KEY'].gsub('\n', "\n"))
 
   # Your registered app must have a secret set. The secret is used to verify
@@ -29,7 +46,7 @@ class GHAapp < Sinatra::Application
   end
 
 
-  # Executed before each request to the `/event_handler` route
+  # Before each request to the `/event_handler` route
   before '/event_handler' do
     get_payload_request(request)
     verify_webhook_signature
@@ -40,13 +57,20 @@ class GHAapp < Sinatra::Application
 
 
   post '/event_handler' do
-
     case request.env['HTTP_X_GITHUB_EVENT']
-    when 'issues'
-      if @payload['action'] === 'opened'
-        handle_issue_opened_event(@payload)
-      end
+      when 'installation'
+        if @payload['action'] === 'created'
+          handle_installation_created_event(@payload)
+        end
+
+      when 'pull_request'
+        full_name = @payload['pull_request']['head']['repo']['full_name']
+        user = @payload['pull_request']['user']['login']
+        if @payload['action'] == 'opened' && user == 'dependabot[bot]' 
+          merge_pr(full_name, user , @payload['number'])
+        end
     end
+
 
     200 # success status
   end
@@ -54,11 +78,28 @@ class GHAapp < Sinatra::Application
 
   helpers do
 
-    # When an issue is opened, add a label
-    def handle_issue_opened_event(payload)
-      repo = payload['repository']['full_name']
-      issue_number = payload['issue']['number']
-      @installation_client.add_labels_to_an_issue(repo, issue_number, ['needs-response'])
+    # # # # # # # # # # # # # # # # #
+    # ADD YOUR HELPER METHODS HERE  #
+    # # # # # # # # # # # # # # # # #
+
+    def handle_installation_created_event(payload)
+      payload['repositories'].each do |repo|
+        logger.debug repo
+        opened_dependabot_prs = @installation_client.pull_requests(repo['full_name'], :state => 'opened', :user['login'] => 'dependabot[bot]')
+        merge_prs(opened_dependabot_prs, repo['full_name'])
+      end
+    end
+
+    def merge_pr(full_name, user, number)
+      comment = 'Thank you @' + user + ' for the update. I am a bot too :)'
+      @installation_client.create_pull_request_review(full_name, number, {:event => 'COMMENT', :body => comment})
+      @installation_client.merge_pull_request(full_name, number, commit_message='merges dependabot changes')
+    end
+
+    def merge_prs(prs, repo)
+      prs.each do |pr|
+        merge_pr(pr, repo, pr[:user]['login'], pr[:number])
+      end
     end
 
     # Saves the raw payload and converts the payload to JSON format
@@ -78,7 +119,7 @@ class GHAapp < Sinatra::Application
     # Instantiate an Octokit client authenticated as a GitHub App.
     # GitHub App authentication requires that you construct a
     # JWT (https://jwt.io/introduction/) signed with the app's private key,
-    # so GitHub can be sure that it came from the app and was not altered by
+    # so GitHub can be sure that it came from the app and wasn't alterered by
     # a malicious third party.
     def authenticate_app
       payload = {
