@@ -55,7 +55,11 @@ class GHAapp < Sinatra::Application
   post '/event_handler' do
     case request.env['HTTP_X_GITHUB_EVENT']
     when 'installation'
-      handle_installation_created_event(@payload) if @payload['action'] == 'created'
+      handle_installation_created_event(@payload['repositories']) if @payload['action'] == 'created'
+
+    when 'installation_repositories'
+      logger.debug @payload['repositories_added']
+      handle_installation_created_event(@payload['repositories_added']) if @payload['action'] == 'added'
 
     when 'pull_request'
       full_name = @payload['pull_request']['head']['repo']['full_name']
@@ -71,8 +75,8 @@ class GHAapp < Sinatra::Application
     # ADD YOUR HELPER METHODS HERE  #
     # # # # # # # # # # # # # # # # #
 
-    def handle_installation_created_event(payload)
-      payload['repositories'].each do |repo|
+    def handle_installation_created_event(repos)
+      repos.each do |repo|
         logger.debug repo
         opened_dependabot_prs = @installation_client.pull_requests(repo['full_name'], :state => 'opened', :user['login'] => 'dependabot[bot]')
         merge_prs(opened_dependabot_prs, repo['full_name'])
