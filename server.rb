@@ -54,7 +54,7 @@ class GHAapp < Sinatra::Application
 
   post '/event_handler' do
     case request.env['HTTP_X_GITHUB_EVENT']
-    when 'installation'
+    when 'installation_repositories'
       handle_installation_created_event(@payload) if @payload['action'] == 'created'
 
     when 'pull_request'
