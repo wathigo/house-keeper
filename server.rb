@@ -2,14 +2,13 @@ require 'sinatra'
 require 'octokit'
 require 'dotenv/load' # Manages environment variables
 require 'json'
-require 'openssl'     # Verifies the webhook signature
-require 'jwt'         # Authenticates a GitHub App
-require 'time'        # Gets ISO 8601 representation of a Time object
-require 'logger'      # Logs debug statements
+require 'openssl' # Verifies the webhook signature
+require 'jwt' # Authenticates a GitHub App
+require 'time' # Gets ISO 8601 representation of a Time object
+require 'logger' # Logs debug statements
 
-set :port, 3000
+set :port, 4000
 set :bind, '0.0.0.0'
-
 
 # This is template code to create a GitHub App server.
 # You can read more about GitHub Apps here: # https://developer.github.com/apps/
@@ -29,7 +28,6 @@ set :bind, '0.0.0.0'
 #
 
 class GHAapp < Sinatra::Application
-
   # Expects that the private key in PEM format. Converts the newlines
   PRIVATE_KEY = OpenSSL::PKey::RSA.new(ENV['GITHUB_PRIVATE_KEY'].gsub('\n', "\n"))
 
@@ -45,7 +43,6 @@ class GHAapp < Sinatra::Application
     set :logging, Logger::DEBUG
   end
 
-
   # Before each request to the `/event_handler` route
   before '/event_handler' do
     get_payload_request(request)
@@ -55,29 +52,21 @@ class GHAapp < Sinatra::Application
     authenticate_installation(@payload)
   end
 
-
   post '/event_handler' do
     case request.env['HTTP_X_GITHUB_EVENT']
-      when 'installation'
-        if @payload['action'] === 'created'
-          handle_installation_created_event(@payload)
-        end
+    when 'installation'
+      handle_installation_created_event(@payload) if @payload['action'] == 'created'
 
-      when 'pull_request'
-        full_name = @payload['pull_request']['head']['repo']['full_name']
-        user = @payload['pull_request']['user']['login']
-        if @payload['action'] == 'opened' && user == 'dependabot[bot]' 
-          merge_pr(full_name, user , @payload['number'])
-        end
+    when 'pull_request'
+      full_name = @payload['pull_request']['head']['repo']['full_name']
+      user = @payload['pull_request']['user']['login']
+      merge_pr(full_name, user, @payload['number']) if @payload['action'] == 'opened' && user == 'dependabot[bot]'
     end
-
 
     200 # success status
   end
 
-
   helpers do
-
     # # # # # # # # # # # # # # # # #
     # ADD YOUR HELPER METHODS HERE  #
     # # # # # # # # # # # # # # # # #
@@ -92,13 +81,13 @@ class GHAapp < Sinatra::Application
 
     def merge_pr(full_name, user, number)
       comment = 'Thank you @' + user + ' for the update. I am a bot too :)'
-      @installation_client.create_pull_request_review(full_name, number, {:event => 'COMMENT', :body => comment})
-      @installation_client.merge_pull_request(full_name, number, commit_message='merges dependabot changes')
+      @installation_client.create_pull_request_review(full_name, number, event: 'COMMENT', body: comment)
+      @installation_client.merge_pull_request(full_name, number, 'merges dependabot changes')
     end
 
     def merge_prs(prs, repo)
       prs.each do |pr|
-        merge_pr(pr, repo, pr[:user]['login'], pr[:number])
+        merge_pr(repo, pr[:user]['login'], pr[:number])
       end
     end
 
@@ -112,7 +101,7 @@ class GHAapp < Sinatra::Application
       begin
         @payload = JSON.parse @payload_raw
       rescue => e
-        fail  "Invalid JSON (#{e}): #{@payload_raw}"
+        fail "Invalid JSON (#{e}): #{@payload_raw}" # rubocop:disable SignalException
       end
     end
 
@@ -123,14 +112,14 @@ class GHAapp < Sinatra::Application
     # a malicious third party.
     def authenticate_app
       payload = {
-          # The time that this JWT was issued, _i.e._ now.
-          iat: Time.now.to_i,
+        # The time that this JWT was issued, _i.e._ now.
+        iat: Time.now.to_i,
 
-          # JWT expiration time (10 minute maximum)
-          exp: Time.now.to_i + (10 * 60),
+        # JWT expiration time (10 minute maximum)
+        exp: Time.now.to_i + (10 * 60),
 
-          # Your GitHub App's identifier number
-          iss: APP_IDENTIFIER
+        # Your GitHub App's identifier number
+        iss: APP_IDENTIFIER
       }
 
       # Cryptographically sign the JWT.
@@ -170,7 +159,6 @@ class GHAapp < Sinatra::Application
       logger.debug "---- received event #{request.env['HTTP_X_GITHUB_EVENT']}"
       logger.debug "----    action #{@payload['action']}" unless @payload['action'].nil?
     end
-
   end
 
   # Finally some logic to let us run this server directly from the command line,
