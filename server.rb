@@ -81,7 +81,7 @@ class GHAapp < Sinatra::Application
 
     def merge_pr(full_name, user, number)
       comment = 'Thank you @' + user + ' for the update. I am a bot too :)'
-      @installation_client.create_pull_request_review(full_name, number, { :event => 'COMMENT', :body => comment })
+      @installation_client.create_pull_request_review(full_name, number, { :event => 'COMMENT', :body => comment }) # rubocop:disable
       @installation_client.merge_pull_request(full_name, number, 'merges dependabot changes')
     end
 
@@ -101,7 +101,7 @@ class GHAapp < Sinatra::Application
       begin
         @payload = JSON.parse @payload_raw
       rescue => e
-        fail "Invalid JSON (#{e}): #{@payload_raw}"
+        fail "Invalid JSON (#{e}): #{@payload_raw}" # rubocop:disable
       end
     end
 
