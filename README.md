@@ -29,8 +29,8 @@
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
-House Keeper is a [GitHub app](https://developer.github.com/v3/apps/) that merges all the pull requests created by dependabot when the [installation](https://developer.github.com/v3/activity/events/types/#installationevent) webhook event for `created` action is fired.
-All pull requests opened by dependabot are merged upon installation.
+House Keeper is a [GitHub app](https://developer.github.com/v3/apps/) that merges all the pull requests created by dependabot when the [installation_repositories](https://developer.github.com/v3/activity/events/types/#installation_repositoriesevent) webhook event for `added` action is fired.
+All pull requests opened by dependabot are merged when a repository is added to app.
 
 The app also subscribes [pull_request](https://developer.github.com/v3/activity/events/types/#pullrequestevent) webhook event of `opened` action type and merges a pull request opened by dependabot on the allowed repositories.
 
