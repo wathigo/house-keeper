@@ -10,4 +10,3 @@ gem 'json'
 gem 'logger'
 gem 'rerun'
 gem "rspec"
-gem "thin"
