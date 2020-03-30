@@ -1,2 +1,2 @@
 require "./server"
-run GHAapp
+run GHAapp --path /event_handler --port 3000
