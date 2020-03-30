@@ -97,7 +97,7 @@ class GHAapp < Sinatra::Application
 
     def merge_prs(prs, repo)
       prs.each do |pr|
-        merge_pr(pr, repo, pr[:user]['login'], pr[:number])
+        merge_pr(repo, pr[:user]['login'], pr[:number])
       end
     end
 
