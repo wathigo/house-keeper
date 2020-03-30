@@ -10,7 +10,6 @@ require 'logger'      # Logs debug statements
 set :port, 3000
 set :bind, '0.0.0.0'
 
-
 # This is template code to create a GitHub App server.
 # You can read more about GitHub Apps here: # https://developer.github.com/apps/
 #
@@ -31,7 +30,7 @@ set :bind, '0.0.0.0'
 class GHAapp < Sinatra::Application
 
   # Expects that the private key in PEM format. Converts the newlines
-  PRIVATE_KEY = OpenSSL::PKey::RSA.new(ENV['GITHUB_PRIVATE_KEY'].gsub('\n', "\n"))
+  PRIVATE_KEY = OpenSSL::PKey::RSA.new(ENV['GITHUB_PRIVATE_KEY'].gsub("\\n", "\n"))
 
   # Your registered app must have a secret set. The secret is used to verify
   # that webhooks are sent by GitHub.
@@ -66,7 +65,7 @@ class GHAapp < Sinatra::Application
       when 'pull_request'
         full_name = @payload['pull_request']['head']['repo']['full_name']
         user = @payload['pull_request']['user']['login']
-        if @payload['action'] == 'opened' && user == 'dependabot[bot]' 
+        if @payload['action'] == 'opened' && user == 'dependabot[bot]'
           merge_pr(full_name, user , @payload['number'])
         end
     end
