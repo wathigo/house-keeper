@@ -55,16 +55,12 @@ class GHAapp < Sinatra::Application
   post '/event_handler' do
     case request.env['HTTP_X_GITHUB_EVENT']
     when 'installation'
-      if @payload['action'] === 'created'
-        handle_installation_created_event(@payload)
-      end
+      handle_installation_created_event(@payload) if @payload['action'] == 'created'
 
     when 'pull_request'
       full_name = @payload['pull_request']['head']['repo']['full_name']
       user = @payload['pull_request']['user']['login']
-      if @payload['action'] == 'opened' && user == 'dependabot[bot]'
-        merge_pr(full_name, user, @payload['number'])
-      end
+      merge_pr(full_name, user, @payload['number']) if @payload['action'] == 'opened' && user == 'dependabot[bot]'
     end
 
     200 # success status
@@ -86,7 +82,7 @@ class GHAapp < Sinatra::Application
     def merge_pr(full_name, user, number)
       comment = 'Thank you @' + user + ' for the update. I am a bot too :)'
       @installation_client.create_pull_request_review(full_name, number, { :event => 'COMMENT', :body => comment })
-      @installation_client.merge_pull_request(full_name, number, commit_message = 'merges dependabot changes')
+      @installation_client.merge_pull_request(full_name, number, 'merges dependabot changes')
     end
 
     def merge_prs(prs, repo)
