@@ -82,7 +82,7 @@ class GHAapp < Sinatra::Application
     end
 
     def get_dependabot_prs(prs)
-      opened_dependabot_prs.map {|pr| pr if pr[:user]['login'] == 'dependabot[bot]'}
+      prs.map {|pr| pr if pr[:user]['login'] == 'dependabot[bot]'}
     end
 
     def merge_pr(full_name, user, number)
