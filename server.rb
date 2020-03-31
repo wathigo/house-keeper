@@ -7,7 +7,7 @@ require 'jwt' # Authenticates a GitHub App
 require 'time' # Gets ISO 8601 representation of a Time object
 require 'logger' # Logs debug statements
 
-set :port, 4000
+set :port, 3000
 set :bind, '0.0.0.0'
 
 # This is template code to create a GitHub App server.
@@ -71,16 +71,18 @@ class GHAapp < Sinatra::Application
   end
 
   helpers do
-    # # # # # # # # # # # # # # # # #
-    # ADD YOUR HELPER METHODS HERE  #
-    # # # # # # # # # # # # # # # # #
 
     def handle_installation_created_event(repos)
       repos.each do |repo|
         logger.debug repo
-        opened_dependabot_prs = @installation_client.pull_requests(repo['full_name'], :state => 'opened', :user['login'] => 'dependabot[bot]')
+        all_prs = @installation_client.pull_requests(repo['full_name'], :state => 'opened')
+        opened_dependabot_prs = get_dependabot_prs(all_prs)
         merge_prs(opened_dependabot_prs, repo['full_name'])
       end
+    end
+
+    def get_dependabot_prs(prs)
+      opened_dependabot_prs.map {|pr| pr if pr[:user]['login'] == 'dependabot[bot]'}
     end
 
     def merge_pr(full_name, user, number)
