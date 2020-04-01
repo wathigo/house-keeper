@@ -9,8 +9,8 @@ class Helpers
     prs.map { |pr| pr if dependabot_pr?(pr) }
   end
 
-  def dependabot_pr?(pr)
-    pr['user']['login'] == 'dependabot[bot]'
+  def dependabot_pr?(pull_request)
+    pull_request['user']['login'] == 'dependabot[bot]'
   end
 
   def opened?

@@ -17,7 +17,9 @@ RSpec.describe Helpers do
   let (:opened_action) { Helpers.new(JSON.parse(file4)) }
   let (:created_action) { Helpers.new(JSON.parse(file5)) }
   let (:added_action) { Helpers.new(JSON.parse(file6)) }
-  let (:helper) { Helpers.new("") }
+  let (:helper) { Helpers.new('') }
+  let (:dependabot_pr) { helper.get_dependabot_prs(pull_requests_some)[0] }
+  # rubocop:enable Lint/ParenthesesAsGroupedExpression
 
   describe 'Helpers#get_dependabot_prs' do
     it 'Returns an epmty array if none of the pull requests was created by dependabot' do
@@ -30,7 +32,6 @@ RSpec.describe Helpers do
   end
 
   describe 'Helpers#dependabot_pr?' do
-    let (:dependabot_pr) { helper.get_dependabot_prs(pull_requests_some)[0] }
     it 'Returns true if a pull request is created by dependabot' do
       expect(helper.dependabot_pr?(dependabot_pr)).to eql(true)
     end
@@ -41,7 +42,6 @@ RSpec.describe Helpers do
   end
 
   describe 'Helpers#opened?' do
-    let (:dependabot_pr) { helper.get_dependabot_prs(pull_requests_some)[0] }
     it "Returns true if action in the payload has a value of 'opened'" do
       expect(opened_action.opened?).to eql(true)
     end
@@ -51,8 +51,7 @@ RSpec.describe Helpers do
     end
   end
 
-  describe 'Helpers#created?' do
-    let (:dependabot_pr) { helper.get_dependabot_prs(pull_requests_some)[0] }
+  describe 'Helpers#created?' do\
     it "Returns true if action in the payload has a value of 'created'" do
       expect(created_action.created?).to eql(true)
     end
@@ -63,7 +62,6 @@ RSpec.describe Helpers do
   end
 
   describe 'Helpers#added?' do
-    let (:dependabot_pr) { helper.get_dependabot_prs(pull_requests_some)[0] }
     it "Returns true if action in the payload has a value of 'added'" do
       expect(added_action.added?).to eql(true)
     end
