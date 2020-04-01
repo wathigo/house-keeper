@@ -57,6 +57,24 @@ Watch all the repo containing pull requests opened by dependabot. You should see
 
 <img align="center" src="images/res.png" alt="Logo">
 
+To test the application locally,
+Clone the repository
+``` 
+git clone https://github.com/wathigo/house-keeper.git
+```
+Navigate to the root directory of the cloned repository
+```
+cd house-keeper
+```
+Install dependencies
+```
+bundle install
+```
+Run tests
+```
+bundle exec rspec
+```
+
 ### Built With
 * [Ruby](https://www.ruby-lang.org/en/)
 * [Sinatra](http://sinatrarb.com/)
