@@ -1,21 +1,23 @@
+# rubocop:disable Lint/ParenthesesAsGroupedExpression
+
 require 'json'
 require_relative '../lib/helpers'
 
 RSpec.describe Helpers do
-  let :file1 { File.read('spec/data/pull_requests_none.json') }
-  let :file2 { File.read('spec/data/pull_requests_some.json') }
-  let :file3 { File.read('spec/data/payload1.json') }
-  let :file4 { File.read('spec/data/payload2.json') }
-  let :file5 { File.read('spec/data/payload3.json') }
-  let :file6 { File.read('spec/data/payload4.json') }
+  let (:file1) { File.read('spec/data/pull_requests_none.json') }
+  let (:file2) { File.read('spec/data/pull_requests_some.json') }
+  let (:file3) { File.read('spec/data/payload1.json') }
+  let (:file4) { File.read('spec/data/payload2.json') }
+  let (:file5) { File.read('spec/data/payload3.json') }
+  let (:file6) { File.read('spec/data/payload4.json') }
 
-  let :pull_requests_none { JSON.parse(file1) }
-  let :pull_requests_some { JSON.parse(file2) }
-  let :closed_action { Helpers.new(JSON.parse(file3)) }
-  let :opened_action { Helpers.new(JSON.parse(file4)) }
-  let :created_action { Helpers.new(JSON.parse(file5)) }
-  let :added_action { Helpers.new(JSON.parse(file6)) }
-  let :helper { Helpers.new("") }
+  let (:pull_requests_none) { JSON.parse(file1) }
+  let (:pull_requests_some) { JSON.parse(file2) }
+  let (:closed_action) { Helpers.new(JSON.parse(file3)) }
+  let (:opened_action) { Helpers.new(JSON.parse(file4)) }
+  let (:created_action) { Helpers.new(JSON.parse(file5)) }
+  let (:added_action) { Helpers.new(JSON.parse(file6)) }
+  let (:helper) { Helpers.new("") }
 
   describe 'Helpers#get_dependabot_prs' do
     it 'Returns an epmty array if none of the pull requests was created by dependabot' do
