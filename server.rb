@@ -7,6 +7,8 @@ require 'jwt' # Authenticates a GitHub App
 require 'time' # Gets ISO 8601 representation of a Time object
 require 'logger' # Logs debug statements
 
+require_relative 'lib/helpers'
+
 set :port, 3000
 set :bind, '0.0.0.0'
 
@@ -55,34 +57,29 @@ class GHAapp < Sinatra::Application
   post '/event_handler' do
     case request.env['HTTP_X_GITHUB_EVENT']
     when 'installation'
-      handle_installation_created_event(@payload['repositories']) if @payload['action'] == 'created'
+      handle_installation_created_event(@payload['repositories']) if @helper.created?
 
     when 'installation_repositories'
-      logger.debug @payload['repositories_added']
-      handle_installation_created_event(@payload['repositories_added']) if @payload['action'] == 'added'
+      handle_installation_created_event(@payload['repositories_added']) if @helper.added?
 
     when 'pull_request'
       full_name = @payload['pull_request']['head']['repo']['full_name']
-      user = @payload['pull_request']['user']['login']
-      merge_pr(full_name, user, @payload['number']) if @payload['action'] == 'opened' && user == 'dependabot[bot]'
+      pr = @payload['pull_request']
+      merge_pr(full_name, user, @payload['number']) if @helper.opened? && @helper.dependabot_pr?(pr)
     end
 
     200 # success status
   end
 
   helpers do
-
     def handle_installation_created_event(repos)
       repos.each do |repo|
         logger.debug repo
         all_prs = @installation_client.pull_requests(repo['full_name'], :state => 'opened')
-        opened_dependabot_prs = get_dependabot_prs(all_prs)
+        logger.debug(all_prs)
+        opened_dependabot_prs = @helper.get_dependabot_prs(all_prs)
         merge_prs(opened_dependabot_prs, repo['full_name'])
       end
-    end
-
-    def get_dependabot_prs(prs)
-      prs.map {|pr| pr if pr[:user]['login'] == 'dependabot[bot]'}
     end
 
     def merge_pr(full_name, user, number)
@@ -106,6 +103,7 @@ class GHAapp < Sinatra::Application
       @payload_raw = request.body.read
       begin
         @payload = JSON.parse @payload_raw
+        @helper = Helpers.new(@payload)
       rescue => e
         fail "Invalid JSON (#{e}): #{@payload_raw}" # rubocop:disable SignalException
       end
