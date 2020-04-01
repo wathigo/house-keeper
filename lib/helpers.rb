@@ -6,7 +6,7 @@ class Helpers
   end
 
   def get_dependabot_prs(prs)
-    prs.map {|pr| pr if dependabot_pr?(pr)}
+    prs.map { |pr| pr if dependabot_pr?(pr) }
   end
 
   def dependabot_pr?(pr)
@@ -24,5 +24,4 @@ class Helpers
   def added?
     @payload['action'] == 'added'
   end
-
 end

@@ -72,7 +72,6 @@ class GHAapp < Sinatra::Application
   end
 
   helpers do
-
     def handle_installation_created_event(repos)
       repos.each do |repo|
         logger.debug repo
@@ -82,8 +81,6 @@ class GHAapp < Sinatra::Application
         merge_prs(opened_dependabot_prs, repo['full_name'])
       end
     end
-
-
 
     def merge_pr(full_name, user, number)
       comment = 'Thank you @' + user + ' for the update. I am a bot too :)'
