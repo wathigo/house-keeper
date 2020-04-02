@@ -1,4 +1,4 @@
-[![Maintainability](https://api.codeclimate.com/v1/badges/e05ca85acd427e4100d7/maintainability)](https://codeclimate.com/github/wathigo/house-keeper/maintainability)
+[![Maintainability](https://api.codeclimate.com/v1/badges/e05ca85acd427e4100d7/maintainability)](https://codeclimate.com/github/wathigo/house-keeper/maintainability)[![Build Status](https://travis-ci.org/wathigo/house-keeper.svg?branch=develop)](https://travis-ci.org/wathigo/house-keeper)
 <p align="center">
   <a href="#">
     <img width=150 height=80 align="center" src="images/logo.png" alt="Logo">
