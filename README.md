@@ -80,6 +80,7 @@ bundle exec rspec
 * [Ruby](https://www.ruby-lang.org/en/)
 * [Sinatra](http://sinatrarb.com/)
 * [Octokit](https://github.com/octokit/octokit.rb)
+* [Gihub Webhooks](https://developer.github.com/webhooks/)
 
 ### Contact
 * [Simon Wathigo](https://github.com/wathigo) - wathigosimon@gmail.com - [Linkedin](https://www.linkedin.com/in/simon-wathigo-445370183/) - [Portfolio](https://simon-wathigo.netlify.com/)
