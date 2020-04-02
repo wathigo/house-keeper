@@ -2,7 +2,7 @@
 
 env:
   global:
-    - CC_TEST_REPORTER_ID=79fb7f613fd5c3e21add5935e7a2d8f63f113e6212bbfc0f23e7627e40ead0ff
+    - CC_TEST_REPORTER_ID=8ee8cfdf748909ec640e1e53dc74491511c2fbe17c4e7b56d2550e2f99162ed3
 before_install:
     - gem install bundler
 language: ruby
