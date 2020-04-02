@@ -30,13 +30,13 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 House Keeper is a [GitHub app](https://developer.github.com/v3/apps/) that subscribes to the following github [webhooks](https://developer.github.com/webhooks/) events:
-1. [installation](https://developer.github.com/v3/activity/events/types/#installationevent). When `installation` event of `created` action type is fired, the app fetches all the pull requests from allowed repository meeting the following conditions.
+1. [installation](https://developer.github.com/v3/activity/events/types/#installationevent). When `installation` webhook event of `created` action type is fired, the app fetches all the pull requests from allowed repository meeting the following conditions.
 * Have a `status = 'opened'`
 * Created by dependabot user.
 
-2. [installation_repositories](https://developer.github.com/v3/activity/events/types/#installation_repositoriesevent). When `installation_repositories` of `added` action type is fired, the app through all the repos, fetches pull request that meets the conditions above, leaves a friendly comment and merges the branch.
+2. [installation_repositories](https://developer.github.com/v3/activity/events/types/#installation_repositoriesevent). When `installation_repositories` webhook event of `added` action type is fired, the app through all the repos, fetches pull request that meets the conditions above, leaves a friendly comment and merges the branch.
 
-3. [pull_request](https://developer.github.com/v3/activity/events/types/#pullrequestevent). When `pull_request` of `opened` action type is fired, the app leaved a comment and merges the pull request of the creator of the pull request is dependabot.
+3. [pull_request](https://developer.github.com/v3/activity/events/types/#pullrequestevent). When `pull_request` webhook event of `opened` action type is fired, the app leaved a comment and merges the pull request if the creator of the pull request is dependabot.
 
 ### Getting Started
 
