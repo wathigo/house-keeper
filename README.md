@@ -78,7 +78,7 @@ bundle exec rspec
 
 
 ### ToDo
-Merge the branch when all the checks are done. This is an issue opened [here]([issues page](../../issues/5).)
+Merge the branch when all the checks are done. This is an issue opened [here](../../issues/5)
 
 ### Built With
 * [Ruby](https://www.ruby-lang.org/en/)
