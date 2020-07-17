@@ -79,7 +79,7 @@ bundle exec rspec
 
 
 ### Potential Features
-Merge the branch when all the checks are done. This is an issue opened [here](../../issues/5)
+Merge the branch when all the checks are done by integrating the app with Checks API. This is an issue opened [here](../../issues/5).
 
 ### Built With
 * [Ruby](https://www.ruby-lang.org/en/)
