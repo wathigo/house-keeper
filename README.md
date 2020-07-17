@@ -24,6 +24,7 @@
   * [Built With](#built-with)
   * [Getting Started](#getting-started)
 * [Contact](#Contact)
+* [Potential Features](#potential-features)
 
 
 
@@ -77,7 +78,7 @@ bundle exec rspec
 ```
 
 
-### ToDo
+### Potential Features
 Merge the branch when all the checks are done. This is an issue opened [here](../../issues/5)
 
 ### Built With
